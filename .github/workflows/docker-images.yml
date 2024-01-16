@@ -1,0 +1,77 @@
+name: Build FFmpeg
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: "11"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+        with:
+          sdk-platform: "android-33"
+          ndk-version: "r21"
+
+      - name: Clone FFmpeg repository
+        run: |
+          cd preferred/location/for/ffmpeg
+          git clone git://source.ffmpeg.org/ffmpeg
+          cd ffmpeg
+          git checkout release/4.2
+          FFMPEG_PATH=$(pwd)
+
+      - name: Set environment variables
+        run: |
+          echo "FFMPEG_MODULE_PATH=$(pwd)/extensions/ffmpeg/src/main" >> $GITHUB_ENV
+          echo "NDK_PATH=$ANDROID_NDK_HOME" >> $GITHUB_ENV
+          echo "HOST_PLATFORM=linux-x86_64" >> $GITHUB_ENV
+          echo "ENABLED_DECODERS=(vorbis opus flac mp3 acc ac3 eac3)" >> $GITHUB_ENV
+
+      - name: Build FFmpeg
+        run: |
+          cd $FFMPEG_MODULE_PATH/jni
+          ln -s $FFMPEG_PATH ffmpeg
+          ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.0 # 指定发布的标签名称
+          release_name: Release 1.0.0 # 指定发布的名称
+          draft: false
+          prerelease: false
+
+      - name: Upload APKs
+        uses: actions/upload-artifact@v2
+        with:
+          name: FFmpeg Binaries
+          path: $FFMPEG_MODULE_PATH/jni/ffmpeg/build/outputs/ # 指定构建结果的路径
+
+      - name: Get Release ID
+        id: get_release_id
+        run: echo "::set-output name=release_id::$(echo ${{ steps.create_release.outputs.release_id }})"
+
+      - name: Attach Artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/FFmpeg Binaries.zip # 压缩构建结果的路径
+          asset_name: FFmpeg Binaries.zip
+          asset_content_type: application/zip
