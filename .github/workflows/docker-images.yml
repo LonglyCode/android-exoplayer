@@ -50,26 +50,37 @@ jobs:
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
           ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v1.0.2 # 指定发布的标签名称
-          release_name: Release 1.0.2 # 指定发布的名称
-          draft: false
-          prerelease: false
+      - name: Build ExoPlayer
+        run: |
+          cd $ExoPlayer_PATH
+          ./gradlew :extension-ffmpeg:assembleRelease
 
-      - name: Upload APKs
+      - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: FFmpeg Binaries
-          path: $FFMPEG_MODULE_PATH/jni/ffmpeg/build/outputs/ # 指定构建结果的路径
+          name: extension-ffmpeg-release.aar
+          path: $ExoPlayer_PATH/extensions/ffmpeg/buildout/outputs/aar
 
-      - name: Get Release ID
-        id: get_release_id
-        run: echo "::set-output name=release_id::$(echo ${{ steps.create_release.outputs.release_id }})"
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v1.0.3 # 指定发布的标签名称
+      #     release_name: Release 1.0.3 # 指定发布的名称
+      #     draft: false
+      #     prerelease: false
+
+      # - name: Upload APKs
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: FFmpeg Binaries
+      #     path: $FFMPEG_MODULE_PATH/jni/ffmpeg/android-libs/ # 指定构建结果的路径
+
+      # - name: Get Release ID
+      #   id: get_release_id
+      #   run: echo "::set-output name=release_id::$(echo ${{ steps.create_release.outputs.release_id }})"
 
       # - name: Attach Artifacts
       #   uses: actions/upload-release-asset@v1
