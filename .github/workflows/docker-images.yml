@@ -32,6 +32,7 @@ jobs:
           git clone https://github.com/google/ExoPlayer.git 
           cd ExoPlayer
           git checkout tags/r2.16.1
+          echo "ExoPlayer_PATH=$(pwd)" >> $GITHUB_ENV
           echo "FFMPEG_MODULE_PATH=$(pwd)/extensions/ffmpeg/src/main" >> $GITHUB_ENV
           echo "NDK_PATH=$ANDROID_NDK_HOME" >> $GITHUB_ENV
           echo "HOST_PLATFORM=linux-x86_64" >> $GITHUB_ENV
@@ -45,6 +46,14 @@ jobs:
           git checkout release/4.2
           cd ..
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
+
+      - name: Build extension-ffmpeg
+        run: |
+          cd $ExoPlayer_PATH
+          ./gradlew extension-ffmpeg:assembleRelease
+          ls -ahl $ExoPlayer_PATH/extensions/ffmpeg/buildout/output/aar
+          ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
+          ls -ahl $ExoPlayer_PATH/extensions/ffmpeg
 
       - name: Create Release
         id: create_release
