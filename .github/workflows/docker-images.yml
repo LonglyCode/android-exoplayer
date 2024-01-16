@@ -21,7 +21,6 @@ jobs:
           architecture: x64
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v2
         run: | 
           cd "$GITHUB_WORKSPACE"
           wget https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
@@ -50,13 +49,6 @@ jobs:
           cd ..
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
           ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
-
-      # - name: Build extension-ffmpeg
-      #   run: |
-      #     cd $ExoPlayer_PATH
-      #     ./gradlew extension-ffmpeg:assembleRelease
-      #     ls -ahl $ExoPlayer_PATH/extensions/ffmpeg/buildout/output/aar
-      #     ls -ahl $ExoPlayer_PATH/extensions/ffmpeg
 
       - name: Create Release
         id: create_release
