@@ -36,6 +36,10 @@ jobs:
 
       - name: Set environment variables
         run: |
+          cd ~
+          git clone https://github.com/google/ExoPlayer.git 
+          cd ExoPlayer
+          git checkout tags/r2.16.1
           echo "FFMPEG_MODULE_PATH=$(pwd)/extensions/ffmpeg/src/main" >> $GITHUB_ENV
           echo "NDK_PATH=$ANDROID_NDK_HOME" >> $GITHUB_ENV
           echo "HOST_PLATFORM=linux-x86_64" >> $GITHUB_ENV
