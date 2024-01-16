@@ -50,16 +50,16 @@ jobs:
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
           ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
 
-      - name: Build ExoPlayer
-        run: |
-          cd $ExoPlayer_PATH
-          ./gradlew :extension-ffmpeg:assembleRelease
+      # - name: Build ExoPlayer
+      #   run: |
+      #     cd $ExoPlayer_PATH
+      #     ./gradlew :extension-ffmpeg:assembleRelease
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: extension-ffmpeg-release.aar
-          path: $ExoPlayer_PATH/extensions/ffmpeg/buildout/outputs/aar
+          name: Exoplayer FFmpeg
+          path: $FFMPEG_MODULE_PATH/jni/ffmpeg/android-libs/*
 
       # - name: Create Release
       #   id: create_release
