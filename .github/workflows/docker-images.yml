@@ -59,7 +59,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Exoplayer FFmpeg
-          path: $FFMPEG_MODULE_PATH/jni/ffmpeg/android-libs/*
+          path: /home/runner/work/android-exoplayer/android-exoplayer/ExoPlayer/extensions/ffmpeg/src/main/jni/ffmpeg/android-libs/*
 
       # - name: Create Release
       #   id: create_release
