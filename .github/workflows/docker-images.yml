@@ -26,14 +26,6 @@ jobs:
           sdk-platform: "android-33"
           ndk-version: "r21"
 
-      - name: Clone FFmpeg repository
-        run: |
-          cd ~
-          git clone git://source.ffmpeg.org/ffmpeg
-          cd ffmpeg
-          git checkout release/4.2
-          FFMPEG_PATH=$(pwd)
-
       - name: Set environment variables
         run: |
           cd ~
@@ -48,7 +40,10 @@ jobs:
       - name: Build FFmpeg
         run: |
           cd $FFMPEG_MODULE_PATH/jni
-          ln -s $FFMPEG_PATH ffmpeg
+          git clone git://source.ffmpeg.org/ffmpeg
+          cd ffmpeg
+          git checkout release/4.2
+          cd ..
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
 
       - name: Create Release
