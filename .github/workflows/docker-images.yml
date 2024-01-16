@@ -22,19 +22,22 @@ jobs:
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
-        with:
-          sdk-platform: "android-33"
-          ndk-version: "r21"
+        run: | 
+          cd "$GITHUB_WORKSPACE"
+          wget https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
+          unzip android-ndk-r21e-linux-x86_64.zip
+          rm android-ndk-r21e-linux-x86_64.zip
+          cd android-ndk-r21e
+          echo "NDK_PATH=$(pwd)" >> $GITHUB_ENV
 
       - name: Set environment variables
         run: |
-          cd ~
+          cd "$GITHUB_WORKSPACE"
           git clone https://github.com/google/ExoPlayer.git 
           cd ExoPlayer
           git checkout tags/r2.16.1
           echo "ExoPlayer_PATH=$(pwd)" >> $GITHUB_ENV
           echo "FFMPEG_MODULE_PATH=$(pwd)/extensions/ffmpeg/src/main" >> $GITHUB_ENV
-          echo "NDK_PATH=$ANDROID_NDK_HOME" >> $GITHUB_ENV
           echo "HOST_PLATFORM=linux-x86_64" >> $GITHUB_ENV
           echo "ENABLED_DECODERS=(vorbis opus flac mp3 acc ac3 eac3)" >> $GITHUB_ENV
 
@@ -48,12 +51,12 @@ jobs:
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
           ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
 
-      - name: Build extension-ffmpeg
-        run: |
-          cd $ExoPlayer_PATH
-          ./gradlew extension-ffmpeg:assembleRelease
-          ls -ahl $ExoPlayer_PATH/extensions/ffmpeg/buildout/output/aar
-          ls -ahl $ExoPlayer_PATH/extensions/ffmpeg
+      # - name: Build extension-ffmpeg
+      #   run: |
+      #     cd $ExoPlayer_PATH
+      #     ./gradlew extension-ffmpeg:assembleRelease
+      #     ls -ahl $ExoPlayer_PATH/extensions/ffmpeg/buildout/output/aar
+      #     ls -ahl $ExoPlayer_PATH/extensions/ffmpeg
 
       - name: Create Release
         id: create_release
