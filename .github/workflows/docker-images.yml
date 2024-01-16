@@ -46,13 +46,13 @@ jobs:
           git checkout release/4.2
           cd ..
           ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
+          ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
 
       - name: Build extension-ffmpeg
         run: |
           cd $ExoPlayer_PATH
           ./gradlew extension-ffmpeg:assembleRelease
           ls -ahl $ExoPlayer_PATH/extensions/ffmpeg/buildout/output/aar
-          ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
           ls -ahl $ExoPlayer_PATH/extensions/ffmpeg
 
       - name: Create Release
