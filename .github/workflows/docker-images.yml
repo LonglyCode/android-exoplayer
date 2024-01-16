@@ -28,11 +28,11 @@ jobs:
 
       - name: Clone FFmpeg repository
         run: |
+          cd ~
           git clone git://source.ffmpeg.org/ffmpeg
           cd ffmpeg
           git checkout release/4.2
           FFMPEG_PATH=$(pwd)
-        working-directory: /usr/bin
 
       - name: Set environment variables
         run: |
