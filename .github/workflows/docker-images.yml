@@ -38,7 +38,7 @@ jobs:
           echo "ExoPlayer_PATH=$(pwd)" >> $GITHUB_ENV
           echo "FFMPEG_MODULE_PATH=$(pwd)/extensions/ffmpeg/src/main" >> $GITHUB_ENV
           echo "HOST_PLATFORM=linux-x86_64" >> $GITHUB_ENV
-          echo "ENABLED_DECODERS=(vorbis opus flac mp3 aac ac3)" >> $GITHUB_ENV
+          echo "ENABLED_DECODERS=(opus flac ac3 mp3 aac vorbis)" >> $GITHUB_ENV
 
       - name: Build FFmpeg
         run: |
