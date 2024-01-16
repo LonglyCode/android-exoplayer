@@ -47,7 +47,7 @@ jobs:
           cd ffmpeg
           git checkout release/4.2
           cd ..
-          ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM ${ENABLED_DECODERS[@]}
+          ./build_ffmpeg.sh $FFMPEG_MODULE_PATH $NDK_PATH $HOST_PLATFORM opus flac ac3 mp3 aac vorbis
           ls -ahl $FFMPEG_MODULE_PATH/jni/ffmpeg
 
       - name: Build ExoPlayer
