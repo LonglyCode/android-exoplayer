@@ -34,7 +34,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           git clone https://github.com/google/ExoPlayer.git 
           cd ExoPlayer
-          git checkout release/r2.16.1
+          git checkout release-v2
           echo "ExoPlayer_PATH=$(pwd)" >> $GITHUB_ENV
           echo "FFMPEG_MODULE_PATH=$(pwd)/extensions/ffmpeg/src/main" >> $GITHUB_ENV
           echo "HOST_PLATFORM=linux-x86_64" >> $GITHUB_ENV
